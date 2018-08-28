@@ -11,7 +11,7 @@ Import the step library into your pipeline.
 ### run:xspec-xslt
 
 ```xproc
-<p:declare-step type="run:xspec-xslt">
+<p:declare-step type="run:xspec-xslt" xmlns:run="tag:maus@hab.de,2018:xproc-xspec">
 
   <p:input  port="source" primary="true" sequence="false"/> <!-- XSpec test case -->
   <p:output port="result" primary="true" sequence="false"/> <!-- XSpec report -->
@@ -25,7 +25,7 @@ Import the step library into your pipeline.
 This step depends on the XProc extension step [pxf:delete](http://exproc.org/proposed/steps/fileutils.html) and the Calabash extension attribute [cx:depend-on](http://xmlcalabash.com/docs/reference/extattr.html#cx-depends-on). The URIs of the Schematron compiler default to the [Schematron "skeleton" XSLT implementation](https://github.com/Schematron/schematron) installed in ```$XSpecHome/src/schematron/iso-schematron```.
 
 ```xproc
-<p:declare-step type="run:xspec-schematron">
+<p:declare-step type="run:xspec-schematron" xmlns:run="tag:maus@hab.de,2018:xproc-xspec">
 
   <p:input  port="source" primary="true" sequence="false"/>  <!-- XSpec test case -->
   <p:output port="result" primary="true" sequence="false"/>  <!-- XSpec report -->
@@ -44,7 +44,7 @@ This step depends on the XProc extension step [pxf:delete](http://exproc.org/pro
 This helper compiles the Schematron arriving at the primary input port `source` by subsequently applying the XSL templates `SchematronXsltInclude`, `SchematronXsltExpand`, and `SchematronXsltCompile`.
 
 ```xproc
-<p:declare-step name="compile-schematron" type="run:compile-schematron">
+<p:declare-step name="compile-schematron" type="run:compile-schematron" xmlns:run="tag:maus@hab.de,2018:xproc-xspec">
   <p:input  port="source" primary="true" sequence="false"/>  <!-- Schematron -->
   <p:output port="result" primary="true" sequence="false"/>  <!-- Compiled XSLT -->
 
