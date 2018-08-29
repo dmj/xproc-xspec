@@ -66,6 +66,8 @@
     <p:option name="SchematronXsltExpand"  required="true"/>
     <p:option name="SchematronXsltCompile" required="true"/>
 
+    <p:option name="phase" required="false" select="'#DEFAULT'"/>
+
     <p:load name="load-include">
       <p:with-option name="href" select="$SchematronXsltInclude"/>
     </p:load>
@@ -103,14 +105,12 @@
     </p:xslt>
 
     <p:xslt name="compile">
+      <p:with-param name="phase" select="$phase"/>
       <p:input port="source">
         <p:pipe step="expand" port="result"/>
       </p:input>
       <p:input port="stylesheet">
         <p:pipe step="load-compile" port="result"/>
-      </p:input>
-      <p:input port="parameters">
-        <p:empty/>
       </p:input>
     </p:xslt>
   </p:declare-step>
