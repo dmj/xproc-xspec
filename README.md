@@ -51,6 +51,8 @@ This helper compiles the Schematron arriving at the primary input port `source` 
   <p:option name="SchematronXsltInclude" required="true"/>   <!-- URI of Schematron compiler, phase include XSLT -->
   <p:option name="SchematronXsltExpand"  required="true"/>   <!-- URI of Schematron compiler, phase expand XSLT -->
   <p:option name="SchematronXsltCompile" required="true"/>   <!-- URI of Schematron compiler, phase compile XSLT -->
+  
+  <p:option name="phase" required="false"/>                  <!-- Schematron phase -->
 </p:declare-step>
 
 ```
