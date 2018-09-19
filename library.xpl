@@ -1,5 +1,6 @@
 <p:library version="1.0"
            xmlns:cx="http://xmlcalabash.com/ns/extensions"
+           xmlns:c="http://www.w3.org/ns/xproc-step"
            xmlns:p="http://www.w3.org/ns/xproc"
            xmlns:pxf="http://exproc.org/proposed/steps/file"
            xmlns:run="tag:maus@hab.de,2018:xproc-xspec"
@@ -60,13 +61,16 @@
 
   <p:declare-step name="compile-schematron" type="run:compile-schematron">
     <p:input  port="source" primary="true" sequence="false"/>
+    <p:input  port="parameters" primary="false" kind="parameter">
+      <p:inline>
+        <c:parameters/>
+      </p:inline>
+    </p:input>
     <p:output port="result" primary="true" sequence="false"/>
 
     <p:option name="SchematronXsltInclude" required="true"/>
     <p:option name="SchematronXsltExpand"  required="true"/>
     <p:option name="SchematronXsltCompile" required="true"/>
-
-    <p:option name="phase" required="false" select="'#DEFAULT'"/>
 
     <p:load name="load-include">
       <p:with-option name="href" select="$SchematronXsltInclude"/>
@@ -105,7 +109,9 @@
     </p:xslt>
 
     <p:xslt name="compile">
-      <p:with-param name="phase" select="$phase"/>
+      <p:input port="parameters">
+        <p:pipe step="compile-schematron" port="parameters"/>
+      </p:input>
       <p:input port="source">
         <p:pipe step="expand" port="result"/>
       </p:input>
@@ -143,12 +149,37 @@
       </p:with-option>
     </p:load>
 
+    <p:xslt name="parameters">
+      <p:input port="parameters">
+        <p:empty/>
+      </p:input>
+      <p:input port="source">
+        <p:pipe step="xspec-schematron" port="source"/>
+      </p:input>
+      <p:input port="stylesheet">
+        <p:inline>
+          <xsl:transform version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xspec="http://www.jenitennison.com/xslt/xspec">
+            <xsl:template match="xspec:description">
+              <c:param-set>
+                <xsl:for-each select="xspec:param">
+                  <c:param name="{@name}" value="{.}"/>
+                </xsl:for-each>
+              </c:param-set>
+            </xsl:template>
+          </xsl:transform>
+        </p:inline>
+      </p:input>
+    </p:xslt>
+
     <run:compile-schematron name="compile-schematron">
       <p:with-option name="SchematronXsltInclude" select="$SchematronXsltInclude"/>
       <p:with-option name="SchematronXsltExpand" select="$SchematronXsltExpand"/>
       <p:with-option name="SchematronXsltCompile" select="$SchematronXsltCompile"/>
       <p:input port="source">
         <p:pipe step="load-schematron" port="result"/>
+      </p:input>
+      <p:input port="parameters">
+        <p:pipe step="parameters" port="result"/>
       </p:input>
     </run:compile-schematron>
 
