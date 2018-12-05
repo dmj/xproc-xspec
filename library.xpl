@@ -124,7 +124,11 @@
   <p:declare-step name="xspec-schematron" type="run:xspec-schematron">
 
     <p:input  port="source" primary="true" sequence="false"/>
-
+    <p:input  port="parameters" primary="false" kind="parameter">
+      <p:inline>
+        <c:parameters/>
+      </p:inline>
+    </p:input>
     <p:output port="result" primary="true" sequence="false">
       <p:pipe step="run" port="result"/>
     </p:output>
