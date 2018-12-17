@@ -153,27 +153,43 @@
       </p:with-option>
     </p:load>
 
-    <p:xslt name="parameters">
-      <p:input port="parameters">
-        <p:empty/>
-      </p:input>
-      <p:input port="source">
-        <p:pipe step="xspec-schematron" port="source"/>
-      </p:input>
-      <p:input port="stylesheet">
-        <p:inline>
-          <xsl:transform version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xspec="http://www.jenitennison.com/xslt/xspec">
-            <xsl:template match="xspec:description">
-              <c:param-set>
-                <xsl:for-each select="xspec:param">
-                  <c:param name="{@name}" value="{.}"/>
-                </xsl:for-each>
-              </c:param-set>
-            </xsl:template>
-          </xsl:transform>
-        </p:inline>
-      </p:input>
-    </p:xslt>
+    <p:group name="parameters">
+      <p:output port="result"/>
+
+      <p:xslt name="xspec-parameters">
+        <p:input port="parameters">
+          <p:empty/>
+        </p:input>
+        <p:input port="source">
+          <p:pipe step="xspec-schematron" port="source"/>
+        </p:input>
+        <p:input port="stylesheet">
+          <p:inline>
+            <xsl:transform version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xspec="http://www.jenitennison.com/xslt/xspec">
+              <xsl:template match="xspec:description">
+                <c:param-set>
+                  <xsl:for-each select="xspec:param">
+                    <c:param name="{@name}" value="{.}"/>
+                  </xsl:for-each>
+                </c:param-set>
+              </xsl:template>
+            </xsl:transform>
+          </p:inline>
+        </p:input>
+      </p:xslt>
+
+      <p:unwrap match="/*" name="xspec-parameters-unwrap"/>
+
+      <p:insert match="/*" position="last-child">
+        <p:input port="source">
+          <p:pipe step="xspec-schematron" port="parameters"/>
+        </p:input>
+        <p:input port="insertion">
+          <p:pipe step="xspec-parameters-unwrap" port="result"/>
+        </p:input>
+      </p:insert>
+
+    </p:group>
 
     <run:compile-schematron name="compile-schematron">
       <p:with-option name="SchematronXsltInclude" select="$SchematronXsltInclude"/>
