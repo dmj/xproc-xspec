@@ -17,10 +17,6 @@
       <p:with-option name="href" select="resolve-uri('src/compiler/generate-xspec-tests.xsl', $XSpecHome)"/>
     </p:load>
 
-    <p:load name="load-reporter">
-      <p:with-option name="href" select="resolve-uri('src/reporter/format-xspec-report.xsl', $XSpecHome)"/>
-    </p:load>
-
     <p:xslt name="compile">
       <p:input port="source">
         <p:pipe port="source" step="xspec-xslt"/>
@@ -39,18 +35,6 @@
       </p:input>
       <p:input port="stylesheet">
         <p:pipe step="compile" port="result"/>
-      </p:input>
-      <p:input port="parameters">
-        <p:empty/>
-      </p:input>
-    </p:xslt>
-
-    <p:xslt name="report">
-      <p:input port="source">
-        <p:pipe step="run" port="result"/>
-      </p:input>
-      <p:input port="stylesheet">
-        <p:pipe step="load-reporter" port="result"/>
       </p:input>
       <p:input port="parameters">
         <p:empty/>
