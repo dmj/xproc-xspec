@@ -13,6 +13,8 @@
     <p:input  port="source" primary="true" sequence="false"/>
     <p:output port="result" primary="true" sequence="false"/>
 
+    <p:variable name="baseUri" select="base-uri(/)"/>
+
     <p:load name="load-compiler">
       <p:with-option name="href" select="resolve-uri('src/compiler/generate-xspec-tests.xsl', $XSpecHome)"/>
     </p:load>
@@ -29,12 +31,19 @@
       </p:input>
     </p:xslt>
 
+    <p:add-attribute name="fix-base-uri" attribute-name="xml:base" match="/*">
+      <p:with-option name="attribute-value" select="$baseUri"/>
+      <p:input port="source">
+        <p:pipe step="compile" port="result"/>
+      </p:input>
+    </p:add-attribute>
+
     <p:xslt name="run" template-name="xspec:main">
       <p:input port="source">
         <p:empty/>
       </p:input>
       <p:input port="stylesheet">
-        <p:pipe step="compile" port="result"/>
+        <p:pipe step="fix-base-uri" port="result"/>
       </p:input>
       <p:input port="parameters">
         <p:empty/>
